@@ -1,7 +1,7 @@
 ﻿using Library.Models.Account;
 using System.Web;
 using System.Web.Mvc;
-using static Library.Models.Account.PersonModel;
+using static Library.Models.Account.ReaderModel;
 
 //контролер "всевидяще око"
 namespace Library.Controllers
@@ -90,42 +90,42 @@ namespace Library.Controllers
 
 
 
-        //[HttpGet]
-        //public ActionResult UserProfile()
-        //{
-        //    if (Session["login"] != null)
-        //    {
-                
-        //        return View(new AccountModel().GetProfile(Session["id"]));
-        //    }
-        //    else
-        //    {
-        //        TempData["message"] = "Вы не авторизованы!";
-        //        return Redirect("/Account/Login");
-        //    }
-        //}
+        [HttpGet]
+        public ActionResult UserProfile()
+        {
+            if (Session["login"] != null)
+            {
 
-        //[HttpPost]
-        //public ActionResult UserProfile(ProfileModel profile)
-        //{
-        //    if (Session["login"] != null)
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            TempData["message"] = new AccountModel().UpdateProfile(profile, Session["id"]);
-        //        }
-        //        else
-        //        {
-        //            SaveMessages();
-        //        }
-        //        return Redirect("/Account/UserProfile");
-        //    }
-        //    else
-        //    {
-        //        TempData["message"] = "Вы не авторизованы!";
-        //        return Redirect("/Account/Login");
-        //    }
-        //}
+                return View(new AccountModel().GetProfile(Session["id"]));
+            }
+            else
+            {
+                TempData["message"] = "Вы не авторизованы!";
+                return Redirect("/Account/Login");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult UserProfile(ProfileModel profile)
+        {
+            if (Session["login"] != null)
+            {
+                if (ModelState.IsValid)
+                {
+                    TempData["message"] = new AccountModel().UpdateProfile(profile, Session["id"]);
+                }
+                else
+                {
+                    SaveMessages();
+                }
+                return Redirect("/Account/UserProfile");
+            }
+            else
+            {
+                TempData["message"] = "Вы не авторизованы!";
+                return Redirect("/Account/Login");
+            }
+        }
 
 
 

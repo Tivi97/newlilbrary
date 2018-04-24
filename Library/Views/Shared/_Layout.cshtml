@@ -29,17 +29,17 @@
                 {
                     <li>@Html.ActionLink("Библиотека №23", "Index", "Home")</li>
                 }
-     
+                else
+                {
+                    <li>@Html.ActionLink("Библиотека №23", "LibraryCard", "Card")</li>
+                    <li>@Html.ActionLink("Сообщения", "Messages", "Messages")</li>
+                }
+
                 </ul>        
             </div>
 
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav navbar-left">
-
-                            <li>@Html.ActionLink("Сообщения", "Messages", "Messages")</li>      
-                            
-                        </ul>
-                           
+                                            
                          <ul class="nav navbar-nav navbar-right">
 
                                 @if (Session["login"] != null)

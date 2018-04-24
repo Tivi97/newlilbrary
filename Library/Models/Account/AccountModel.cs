@@ -136,43 +136,174 @@ namespace Library.Models.Account
                 }
             }
         }
-          //---------------------------------------------------------------------------------------------------------------------
-        //        public ProfileModel GetProfile(object reader)
+        
+        public ProfileModel GetProfile(object Readers)
+        {
+            using (Connection)
+            {
+                Connection.Open();
+                var profile = new ProfileModel
+                {
+                    Reader = new ReaderModel()
+                };
+                var user = profile.Reader;
+                var adapter = new OracleDataAdapter
+                {
+                    SelectCommand = new OracleCommand
+                    {
+                        Connection = Connection,
+                        CommandText = "select  user_fio, data_rogd, passport_series, passport_code, certificate_code, email, login  from users where id_user = :id"
+                    }
+                };
+                adapter.SelectCommand.Parameters.Add("id", int.Parse(Readers.ToString()));
+                var reader = adapter.SelectCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    user.Birthday = reader["data_rogd"].ToString().Split(' ')[0];
+                    user.Fio = reader["user_fio"].ToString();
+                    user.Login = reader["login"].ToString();
+                    user.PassportSeries = reader["passport_series"].ToString();
+                    user.PassportCode= reader["passport_code"].ToString();
+                    user.CertificateCode = reader["certificate_code"].ToString();
+                    user.Email = reader["email"].ToString();
+                }
+                Connection.Close();
+                return profile;
+            }
+        }
+        
 
-        //{
-        //    using (Connection)
-        //    {
-        //        Connection.Open();
-        //        var profile = new ProfileModel
-        //        {
-        //           Reader = new ReaderModel()
-        //        };
-        //        var user = profile.Tourist;
-        //        var adapter = new OracleDataAdapter
-        //        {
-        //            SelectCommand = new OracleCommand
-        //            {
-        //                Connection = Connection,
-        //                CommandText = "select login, fio, phone, sex, birthday from users where id_user = :id"
-        //            }
-        //        };
-        //        adapter.SelectCommand.Parameters.Add("id", int.Parse(reader.ToString()));
-        //        var reader = adapter.SelectCommand.ExecuteReader();
-        //        while (reader.Read())
-        //        {
-        //            user.Birthday = reader["birthday"].ToString().Split(' ')[0];
-        //            user.Fio = reader["fio"].ToString();
-        //            user.Login = reader["login"].ToString();
-        //            user.Phone = reader["phone"].ToString();
-        //            user.Sex = reader["sex"].ToString();
-        //        }
-        //        Connection.Close();
-        //        return profile;
-        //    }
-        //}
-        //  ---------------------------------------------------------------------------------------------------------------------
+        public string UpdateProfile(ProfileModel profile, object id)
+        {
+            var user = profile.Reader;
+            var idUser = int.Parse(id.ToString());
+            var resp = "";
+            using (Connection)
+            {
+                Connection.Open();
+                var adapter = new OracleDataAdapter
+                {
+                    SelectCommand = new OracleCommand
+                    {
+                        Connection = Connection,
+                        CommandText = "select login, user_fio, data_rogd, passport_series, passport_code, certificate_code, email, password  from users where id_user = :id"
+                    }
+                };
+                adapter.SelectCommand.Parameters.Add("id", idUser);
+                var reader = adapter.SelectCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (reader["login"].ToString() != user.Login)
+                    {
+                        adapter = new OracleDataAdapter
+                        {
+                            UpdateCommand = new OracleCommand
+                            {
+                                Connection = Connection,
+                                CommandText = "update users set login = :login where id_user = :id"
+                            }
+                        };
+                        adapter.UpdateCommand.Parameters.Add("login", user.Login);
+                        adapter.UpdateCommand.Parameters.Add("id", idUser);
+                        adapter.UpdateCommand.ExecuteReader();
+                        resp += "Логин успешно изменён!" + "<br/>";
+                    }
 
-        //      
+                    if (user.Password != null)
+                    {
+                        var pass = GetMd5Hash(MD5.Create(), user.Password);
+                        if (reader["password"].ToString() != pass)
+                        {
+                            adapter = new OracleDataAdapter
+                            {
+                                UpdateCommand = new OracleCommand
+                                {
+                                    Connection = Connection,
+                                    CommandText = "update users set password = :pass where id_user = :id"
+                                }
+                            };
+                            adapter.UpdateCommand.Parameters.Add("pass", pass);
+                            adapter.UpdateCommand.Parameters.Add("id", idUser);
+                            adapter.UpdateCommand.ExecuteReader();
+                            resp += "Пароль успешно изменён!" + "<br/>";
+                        }
+                    }
+
+                    if (user.Fio != reader["user_fio"].ToString())
+                    {
+                        adapter = new OracleDataAdapter
+                        {
+                            UpdateCommand = new OracleCommand
+                            {
+                                Connection = Connection,
+                                CommandText = "update users set user_fio = :fio where id_user = :id"
+                            }
+                        };
+                        adapter.UpdateCommand.Parameters.Add("user_fio", user.Fio);
+                        adapter.UpdateCommand.Parameters.Add("id", idUser);
+                        adapter.UpdateCommand.ExecuteReader();
+                        resp += "ФИО успешно изменены!" + "<br/>";
+                    }
+
+                    if (user.PassportSeries != reader["passport_series"].ToString())
+                    {
+                        adapter = new OracleDataAdapter
+                        {
+                            UpdateCommand = new OracleCommand
+                            {
+                                Connection = Connection,
+                                CommandText = "update users set  passport_series = :passport_series where id_user = :id"
+                            }
+                        };
+                        adapter.UpdateCommand.Parameters.Add("passport_series", user.PassportSeries);
+                        adapter.UpdateCommand.Parameters.Add("id", idUser);
+                        adapter.UpdateCommand.ExecuteReader();
+                        resp += "Серия паспорта изменена!" + "<br/>";
+                    }
+
+
+
+                    if (user.PassportCode != (reader["passport_code"].ToString()))
+                    {
+                        adapter = new OracleDataAdapter
+                        {
+                            UpdateCommand = new OracleCommand
+                            {
+                                Connection = Connection,
+                                CommandText = "update users set passport_code = :passport_code where id_user = :id"
+                            }
+                        };
+                        adapter.UpdateCommand.Parameters.Add("passport_code", user.PassportCode);
+                        adapter.UpdateCommand.Parameters.Add("id", idUser);
+                        adapter.UpdateCommand.ExecuteReader();
+                        resp += "Номер паспорта изменён!" + "<br/>";
+                    }
+
+                    if (user.CertificateCode!= (reader["certificate_code"].ToString()))
+                    {
+                        adapter = new OracleDataAdapter
+                        {
+                            UpdateCommand = new OracleCommand
+                            {
+                                Connection = Connection,
+                                CommandText = "update users set certificate_code = :certificate_code where id_user = :id"
+                            }
+                        };
+                        adapter.UpdateCommand.Parameters.Add("certificate_code", user.CertificateCode);
+                        adapter.UpdateCommand.Parameters.Add("id", idUser);
+                        adapter.UpdateCommand.ExecuteReader();
+                        resp += "Код свидетельства о рождении изменён!" + "<br/>";
+                    }
+
+                }
+                Connection.Close();
+
+                if (resp == "")
+                    resp = "Введите новые данные!";
+
+                return resp;
+            }
+        }
 
 
 
