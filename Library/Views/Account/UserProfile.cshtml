@@ -1,0 +1,116 @@
+﻿@using Library.Models.Account
+@model ProfileModel
+
+@{
+    ViewBag.Title = "Редактирование профиля";
+}
+
+@* 
+    <div class="row">
+        <div class="col-md-4">
+            @using (Html.BeginForm())
+            {
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>@ViewBag.Title</legend>
+
+                        <div class="row">
+                            <label for="Fio" class="control-label col-lg-3">ФИО</label>
+                            <div class="form-group col-lg-9">
+                                @Html.TextBoxFor(x => x.Reader.Fio, new { @class = "form-control", value = Model.Reader.Fio })
+                            </div>
+                        </div>
+                      
+                        <div class="row">
+                            <label for="Birthday" class="control-label col-lg-3">День рождения</label>
+                            <div class="form-group col-lg-9">
+                                @Html.TextBoxFor(x => x.Tourist.Birthday, new {@class = "form-control", value = Model.Tourist.Birthday})
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="Phone" class="control-label col-lg-3">Телефон</label>
+                            <div class="form-group col-lg-9">
+                                @Html.TextBoxFor(x => x.Tourist.Phone, new {@class = "form-control", value = Model.Tourist.Phone})
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="Login" class="control-label col-lg-3">Логин</label>
+                            <div class="form-group col-lg-9">
+                                @Html.TextBoxFor(x => x.Tourist.Login, new {@class = "form-control", value = Model.Tourist.Login})
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="Password" class="control-label col-lg-3">Пароль</label>
+                            <div class="form-group col-lg-9">
+                                @Html.TextBoxFor(x => x.Tourist.Password, new {@class = "form-control", placeholder = "Новый пароль", type = "password"})
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-lg-offset-2 col-lg-8">
+                                <button type="submit" class="btn btn-primary btn-block">Сохранить изменения</button>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            }
+        </div>
+        <div class="col-md-7 col-md-offset-1">
+            @using (Html.BeginForm("AddExpereince", "Account", FormMethod.Post))
+            {
+            <form class="form-horizontal">
+                <fieldset>
+                    <legend>Опыт походов</legend>
+
+                    <div class="row">
+                        <div class="form-group col-lg-8">
+                            @Html.DropDownListFor(x => x.Exp.IdHike, (List<SelectListItem>)ViewBag.HikesList, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-lg-4">
+                            <button type="submit" class="btn btn-primary btn-block">Добавить</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            }
+
+            @if (ViewBag.ExpList != null)
+            {
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Р/У</th>
+                        <th>Название похода</th>
+                        <th>Дата начала</th>
+                        <th>Дата завершения</th>
+                        <th>Категория сложности</th>
+                        <th>Вид туризма</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var hike in (List<HikeModel>)ViewBag.ExpList)
+                    {
+                        <tr>
+                            <td>@hike.IsLead</td>
+                            <td>@hike.Name</td>
+                            <td>@hike.Start</td>
+                            <td>@hike.Finish</td>
+                            <td>@hike.Category</td>
+                            <td>@hike.Type</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-lg-6 col-lg-offset-3">
+                        @Html.ActionLink("Сохранить в PDF", "GetPdf", null, new {@class= "btn btn-primary btn-block"})
+                    </div>
+                </div>
+            }
+        </div>
+    </div> *@
